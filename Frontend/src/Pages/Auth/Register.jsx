@@ -1,25 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { registerAPI } from "../../utils/ApiRequest";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
-  const [values, setValues] = useState({ name: "", email: "", password: "" });
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem("user")) navigate("/");
-  }, [navigate]);
+  const [loading, setLoading] = useState(false);
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const toastOptions = {
     position: "bottom-right",
     autoClose: 2000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: false,
+    draggable: true,
     theme: "dark",
   };
 
@@ -30,74 +33,54 @@ const Register = () => {
     e.preventDefault();
     const { name, email, password } = values;
 
-    setLoading(true);
-    const { data } = await axios.post(registerAPI, { name, email, password });
-
-    if (data.success === true) {
-      delete data.user.password;
-      localStorage.setItem("user", JSON.stringify(data.user));
-      toast.success(data.message, toastOptions);
-      navigate("/");
-    } else {
-      toast.error(data.message, toastOptions);
+    if (!name || !email || !password) {
+      toast.error("Please fill in all fields", toastOptions);
+      return;
     }
 
-    setLoading(false);
+    setLoading(true);
+    try {
+      const { data } = await axios.post(registerAPI, values);
+
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        toast.success(data.message, toastOptions);
+        navigate("/setavatar");
+      } else {
+        toast.error(data.message, toastOptions);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Registration failed",
+        toastOptions
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine);
-  }, []);
-
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: { color: { value: "#000" } },
-          fpsLimit: 60,
-          particles: {
-            number: { value: 200, density: { enable: true, value_area: 800 } },
-            color: { value: "#ffcc00" },
-            shape: { type: "circle" },
-            opacity: { value: 0.5, random: true },
-            size: { value: 3, random: { enable: true, minimumValue: 1 } },
-            move: { enable: true, speed: 2 },
-            life: {
-              duration: { sync: false, value: 3 },
-              delay: { random: { enable: true, minimumValue: 0.5 }, value: 1 },
-            },
-          },
-          detectRetina: true,
-        }}
-        className="absolute inset-0 -z-10"
-      />
-
-      <div className="max-w-md mx-auto mt-24 px-6 py-8 bg-gray-900 bg-opacity-80 rounded-md shadow-lg text-white">
+    <div className="relative min-h-screen bg-black flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-xl text-white">
         <div className="text-center mb-6">
           <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "white" }} />
-          <h2 className="text-xl font-semibold mt-2">
-            Welcome to Expense Management System
-          </h2>
-          <h3 className="text-white text-xl mt-4">Registration</h3>
+          <h2 className="text-2xl font-semibold mt-2">Register</h2>
         </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-1">Name</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-sm">Full Name</label>
             <input
               type="text"
               name="name"
               className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Full name"
+              placeholder="Your name"
               value={values.name}
               onChange={handleChange}
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1">Email address</label>
+          <div>
+            <label className="block mb-1 text-sm">Email</label>
             <input
               type="email"
               name="email"
@@ -108,8 +91,8 @@ const Register = () => {
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1">Password</label>
+          <div>
+            <label className="block mb-1 text-sm">Password</label>
             <input
               type="password"
               name="password"
@@ -120,26 +103,20 @@ const Register = () => {
             />
           </div>
 
-          <div className="flex flex-col items-center">
-            <Link to="/forgotPassword" className="text-sm text-yellow-300 hover:underline">
-              Forgot Password?
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition disabled:opacity-50"
+          >
+            {loading ? "Registering..." : "Register"}
+          </button>
+
+          <p className="text-sm mt-4 text-gray-300 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-yellow-400 hover:underline">
+              Login
             </Link>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-4 bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded disabled:opacity-60"
-            >
-              {loading ? "Registering..." : "Signup"}
-            </button>
-
-            <p className="mt-3 text-sm text-gray-400">
-              Already have an account?{" "}
-              <Link to="/login" className="text-yellow-300 hover:underline">
-                Login
-              </Link>
-            </p>
-          </div>
+          </p>
         </form>
         <ToastContainer />
       </div>

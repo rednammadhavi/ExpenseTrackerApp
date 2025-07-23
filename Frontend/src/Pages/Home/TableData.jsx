@@ -20,6 +20,20 @@ const TableData = ({ data, user }) => {
     transactionType: "",
   });
 
+  useEffect(() => {
+    if (editingTransaction) {
+      setValues({
+        title: editTran.title,
+        amount: editTran.amount,
+        description: editTran.description,
+        category: editTran.category,
+        date: editTran.date.slice(0, 10),
+        transactionType: editTran.transactionType,
+      });
+
+    }
+  }, [editingTransaction]);
+
   const handleEditClick = (id) => {
     const editTran = data.find((item) => item._id === id);
     setEditingTransaction(editTran);
@@ -99,7 +113,6 @@ const TableData = ({ data, user }) => {
                 <Form.Control
                   name="title"
                   type="text"
-                  placeholder={editingTransaction.title}
                   value={values.title}
                   onChange={handleChange}
                 />
@@ -109,7 +122,6 @@ const TableData = ({ data, user }) => {
                 <Form.Control
                   name="amount"
                   type="number"
-                  placeholder={editingTransaction.amount}
                   value={values.amount}
                   onChange={handleChange}
                 />
@@ -123,16 +135,8 @@ const TableData = ({ data, user }) => {
                 >
                   <option value="">Choose...</option>
                   {[
-                    "Groceries",
-                    "Rent",
-                    "Salary",
-                    "Tip",
-                    "Food",
-                    "Medical",
-                    "Utilities",
-                    "Entertainment",
-                    "Transportation",
-                    "Other",
+                    "Groceries", "Rent", "Salary", "Tip", "Food",
+                    "Medical", "Utilities", "Entertainment", "Transportation", "Other",
                   ].map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
@@ -143,7 +147,6 @@ const TableData = ({ data, user }) => {
                 <Form.Control
                   type="text"
                   name="description"
-                  placeholder={editingTransaction.description}
                   value={values.description}
                   onChange={handleChange}
                 />

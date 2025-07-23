@@ -33,18 +33,28 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = values;
-    setLoading(true);
 
-    const { data } = await axios.post(loginAPI, { email, password });
-
-    if (data.success === true) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-      toast.success(data.message, toastOptions);
-      navigate("/");
-    } else {
-      toast.error(data.message, toastOptions);
+    if (!email || !password) {
+      toast.error("Please fill in all fields", toastOptions);
+      return;
     }
-    setLoading(false);
+
+    setLoading(true);
+    try {
+      const { data } = await axios.post(loginAPI, { email, password });
+
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        toast.success(data.message, toastOptions);
+        navigate("/");
+      } else {
+        toast.error(data.message || "Login failed", toastOptions);
+      }
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Login request failed", toastOptions);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const particlesInit = useCallback(async (engine) => {
@@ -52,7 +62,8 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4">
+      {/* Particles Background */}
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -76,57 +87,60 @@ const Login = () => {
         className="absolute inset-0 -z-10"
       />
 
-      <div className="max-w-md mx-auto mt-24 px-6 py-8 bg-gray-900 bg-opacity-80 rounded-md shadow-lg text-white">
+      {/* Login Form */}
+      <div className="max-w-md w-full bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-xl text-white z-10">
         <div className="text-center mb-6">
           <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "white" }} />
           <h2 className="text-2xl font-semibold mt-2">Login</h2>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block mb-1">Email address</label>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-sm">Email address</label>
             <input
               type="email"
               name="email"
               className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter email"
+              placeholder="Enter your email"
               value={values.email}
               onChange={handleChange}
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1">Password</label>
+          <div>
+            <label className="block mb-1 text-sm">Password</label>
             <input
               type="password"
               name="password"
               className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Password"
+              placeholder="Enter your password"
               value={values.password}
               onChange={handleChange}
             />
           </div>
 
-          <div className="flex flex-col items-center">
+          <div className="text-right">
             <Link to="/forgotPassword" className="text-sm text-yellow-300 hover:underline">
               Forgot Password?
             </Link>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full mt-4 bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded disabled:opacity-60"
-            >
-              {loading ? "Signing in…" : "Login"}
-            </button>
-
-            <p className="mt-3 text-sm text-gray-400">
-              Don't have an account?{" "}
-              <Link to="/register" className="text-yellow-300 hover:underline">
-                Register
-              </Link>
-            </p>
           </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition disabled:opacity-60"
+          >
+            {loading ? "Signing in…" : "Login"}
+          </button>
+
+          <p className="mt-4 text-sm text-center text-gray-300">
+            Don&apos;t have an account?{" "}
+            <Link to="/register" className="text-yellow-400 hover:underline">
+              Register
+            </Link>
+          </p>
         </form>
+
         <ToastContainer />
       </div>
     </div>

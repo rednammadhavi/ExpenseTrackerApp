@@ -27,7 +27,8 @@ export default function SetAvatar() {
         const data = [];
         for (let i = 0; i < 4; i++) {
           const image = await axios.get(
-            `${api}/${Math.round(Math.random() * 1000)}`
+            `${api}/${Math.round(Math.random() * 1000)}`,
+            { responseType: "text" }
           );
           const buffer = Buffer.from(image.data);
           data.push(buffer.toString("base64"));
@@ -49,18 +50,28 @@ export default function SetAvatar() {
       return;
     }
 
-    const user = await JSON.parse(localStorage.getItem("chat-app-user"));
-    const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
-      image: avatars[selectedAvatar],
-    });
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      toast.error("User not logged in. Please login again.", toastOptions);
+      navigate("/login");
+      return;
+    }
 
-    if (data.isSet) {
-      user.isAvatarImageSet = true;
-      user.avatarImage = data.image;
-      localStorage.setItem("chat-app-user", JSON.stringify(user));
-      navigate("/");
-    } else {
-      toast.error("Error setting avatar. Please try again.", toastOptions);
+    try {
+      const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
+        image: avatars[selectedAvatar],
+      });
+
+      if (data.isSet) {
+        user.isAvatarImageSet = true;
+        user.avatarImage = data.image;
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate("/");
+      } else {
+        toast.error("Error setting avatar. Please try again.", toastOptions);
+      }
+    } catch (error) {
+      toast.error("Server error. Please try again later.", toastOptions);
     }
   };
 
