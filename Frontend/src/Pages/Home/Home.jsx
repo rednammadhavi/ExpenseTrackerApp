@@ -87,7 +87,7 @@ const Home = () => {
     setEndDate(null);
   };
 
-  return (<div className="min-h-screen bg-gray-900 text-gray-200" >
+  return (<div className="min-h-screen text-gray-200" >
     {/* Header is now assumed to be part of the main App layout */}
     <div className="p-4 space-y-4" > {
       loading ? (<Spinner />) : (<>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Buffer } from "buffer";
 import { toast } from "react-toastify";
 import { setAvatarAPI } from "../../utils/ApiRequest";
 import loader from "../../assets/loader.gif";
@@ -14,7 +13,7 @@ export default function SetAvatar() {
   const [selectedAvatar, setSelectedAvatar] = useState(null);
 
   const toastOptions = {
-    position: "bottom-right",
+    position: "top-right",
     autoClose: 8000,
     pauseOnHover: true,
     draggable: true,
@@ -22,26 +21,16 @@ export default function SetAvatar() {
   };
 
   useEffect(() => {
-    const fetchAvatars = async () => {
-      try {
-        const data = [];
-        for (let i = 0; i < 4; i++) {
-          const image = await axios.get(
-            `${api}/${Math.round(Math.random() * 1000)}`,
-            { responseType: "text" }
-          );
-          const buffer = Buffer.from(image.data);
-          data.push(buffer.toString("base64"));
-        }
-        setAvatars(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error loading avatars", error);
-        toast.error("Failed to load avatars", toastOptions);
-      }
+    const generateAvatarURLs = () => {
+      const avatarUrls = Array.from({ length: 4 }, () => {
+        const id = Math.floor(Math.random() * 1000);
+        return `${api}/${id}.svg`;
+      });
+      setAvatars(avatarUrls);
+      setIsLoading(false);
     };
 
-    fetchAvatars();
+    generateAvatarURLs();
   }, []);
 
   const setProfilePicture = async () => {
@@ -59,7 +48,7 @@ export default function SetAvatar() {
 
     try {
       const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
-        image: avatars[selectedAvatar],
+        image: avatars[selectedAvatar], // Send direct URL
       });
 
       if (data.isSet) {
@@ -78,7 +67,7 @@ export default function SetAvatar() {
   return (
     <>
       {isLoading ? (
-        <div className="h-screen flex justify-center items-center bg-gray-900">
+        <div className="h-screen flex justify-center items-center">
           <img src={loader} alt="loader" className="w-24 h-24" />
         </div>
       ) : (
@@ -91,11 +80,11 @@ export default function SetAvatar() {
             {avatars.map((avatar, index) => (
               <img
                 key={index}
-                src={`data:image/svg+xml;base64,${avatar}`}
+                src={avatar}
                 alt="avatar"
                 className={`w-24 h-24 rounded-full cursor-pointer transition duration-300 ${selectedAvatar === index
-                    ? "ring-4 ring-purple-600"
-                    : "hover:ring-4 hover:ring-purple-600"
+                  ? "ring-4 ring-purple-600"
+                  : "hover:ring-4 hover:ring-purple-600"
                   }`}
                 onClick={() => setSelectedAvatar(index)}
               />

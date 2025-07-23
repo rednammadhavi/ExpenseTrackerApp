@@ -16,8 +16,10 @@ app.use(cookieParser());
 
 import { router as transactionRoutes } from './routes/transactions.routes.js';
 import { router as userRoutes } from './routes/user.routes.js';
+import { router as avatarRoutes } from './routes/avatar.routes.js';
 
 app.use("/api/v1", transactionRoutes);
 app.use("/api/auth", userRoutes);
+app.use('/api/avatar', avatarRoutes);
 
 export { app };

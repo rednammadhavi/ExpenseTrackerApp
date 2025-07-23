@@ -1,50 +1,46 @@
 import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
-const registerControllers = async (req, res, next) => {
+const registerControllers = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-        // console.log(name, email, password);
 
         if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Please enter All Fields",
-            })
-        }
-
-        let user = await User.findOne({ email });
-        if (user) {
-            return res.status(409).json({
-                success: false,
-                message: "User already Exists",
             });
         }
 
-        const salt = await bcrypt.genSalt(10);
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            return res.status(409).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
 
-        const hashedPassword = await bcrypt.hash(password, salt);
-        // console.log(hashedPassword);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        let newUser = await User.create({
+        const newUser = await User.create({
             name,
             email,
             password: hashedPassword,
         });
+
         return res.status(200).json({
             success: true,
-            message: "User Created Successfully",
-            user: newUser
+            message: "User registered successfully",
+            user: newUser,
         });
-    }
-    catch (err) {
+    } catch (err) {
+        console.error("Registration Error:", err); // ← Add this for debugging
         return res.status(500).json({
             success: false,
-            message: err.message,
+            message: "Registration failed. " + err.message,
         });
     }
-
-}
+};
 
 const loginControllers = async (req, res, next) => {
     try {
@@ -93,23 +89,47 @@ const loginControllers = async (req, res, next) => {
 
 const setAvatarController = async (req, res, next) => {
     try {
-
         const userId = req.params.id;
         const imageData = req.body.image;
 
-        const userData = await User.findByIdAndUpdate(userId, {
-            isAvatarImageSet: true,
-            avatarImage: imageData,
-        },
-            { new: true });
+        if (!userId || !imageData) {
+            return res.status(400).json({
+                success: false,
+                message: "User ID and avatar image are required",
+            });
+        }
+
+        const userData = await User.findByIdAndUpdate(
+            userId,
+            {
+                isAvatarImageSet: true,
+                avatarImage: imageData,
+            },
+            { new: true }
+        );
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
         return res.status(200).json({
+            success: true,
+            message: "Avatar set successfully",
             isSet: userData.isAvatarImageSet,
             image: userData.avatarImage,
         });
     } catch (err) {
-        next(err);
+        console.error("Set Avatar Error:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
     }
-}
+};
+
 
 const allUsers = async (req, res, next) => {
     try {
