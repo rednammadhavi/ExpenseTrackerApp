@@ -1,5 +1,5 @@
-import Transaction from "../models/transaction.model.js";
-import User from "../models/user.model.js";
+import { Transaction } from "../models/transaction.model.js";
+import { User } from "../models/user.model.js";
 import moment from "moment";
 
 const addTransactionController = async (req, res) => {
@@ -13,7 +13,6 @@ const addTransactionController = async (req, res) => {
       userId,
       transactionType,
     } = req.body;
-
     // console.log(title, amount, description, date, category, userId, transactionType);
 
     if (
@@ -48,10 +47,9 @@ const addTransactionController = async (req, res) => {
       user: userId,
       transactionType: transactionType,
     });
-
     user.transactions.push(newTransaction);
 
-    user.save();
+    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -68,11 +66,9 @@ const addTransactionController = async (req, res) => {
 const getAllTransactionController = async (req, res) => {
   try {
     const { userId, type, frequency, startDate, endDate } = req.body;
-
     console.log(userId, type, frequency, startDate, endDate);
 
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -84,7 +80,6 @@ const getAllTransactionController = async (req, res) => {
     const query = {
       user: userId,
     };
-
     if (type !== 'all') {
       query.transactionType = type;
     }
@@ -106,7 +101,6 @@ const getAllTransactionController = async (req, res) => {
     const transactions = await Transaction.find(query);
 
     // console.log(transactions);
-
     return res.status(200).json({
       success: true,
       transactions: transactions,
@@ -127,7 +121,6 @@ const deleteTransactionController = async (req, res) => {
     // console.log(transactionId, userId);
 
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -137,7 +130,6 @@ const deleteTransactionController = async (req, res) => {
     const transactionElement = await Transaction.findByIdAndDelete(
       transactionId
     );
-
     if (!transactionElement) {
       return res.status(400).json({
         success: false,
@@ -145,15 +137,12 @@ const deleteTransactionController = async (req, res) => {
       });
     }
 
-    const transactionArr = user.transactions.filter(
-      (transaction) => transaction._id === transactionId
+    // Corrected logic: Keep transactions that DO NOT match the ID
+    user.transactions = user.transactions.filter(
+      (transaction) => transaction._id.toString() !== transactionId
     );
 
-    user.transactions = transactionArr;
-
-    user.save();
-
-    // await transactionElement.remove();
+    await user.save();
 
     return res.status(200).json({
       success: true,
@@ -170,14 +159,11 @@ const deleteTransactionController = async (req, res) => {
 const updateTransactionController = async (req, res) => {
   try {
     const transactionId = req.params.id;
-
     const { title, amount, description, date, category, transactionType } =
       req.body;
-
     console.log(title, amount, description, date, category, transactionType);
 
     const transactionElement = await Transaction.findById(transactionId);
-
     if (!transactionElement) {
       return res.status(400).json({
         success: false,

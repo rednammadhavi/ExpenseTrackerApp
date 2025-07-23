@@ -1,10 +1,9 @@
-import User from "../models/user.model.js";
+import { User } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 const registerControllers = async (req, res, next) => {
     try {
         const { name, email, password } = req.body;
-
         // console.log(name, email, password);
 
         if (!name || !email || !password) {
@@ -15,7 +14,6 @@ const registerControllers = async (req, res, next) => {
         }
 
         let user = await User.findOne({ email });
-
         if (user) {
             return res.status(409).json({
                 success: false,
@@ -26,7 +24,6 @@ const registerControllers = async (req, res, next) => {
         const salt = await bcrypt.genSalt(10);
 
         const hashedPassword = await bcrypt.hash(password, salt);
-
         // console.log(hashedPassword);
 
         let newUser = await User.create({
@@ -34,7 +31,6 @@ const registerControllers = async (req, res, next) => {
             email,
             password: hashedPassword,
         });
-
         return res.status(200).json({
             success: true,
             message: "User Created Successfully",
@@ -49,10 +45,10 @@ const registerControllers = async (req, res, next) => {
     }
 
 }
+
 const loginControllers = async (req, res, next) => {
     try {
         const { email, password } = req.body;
-
         // console.log(email, password);
 
         if (!email || !password) {
@@ -62,17 +58,15 @@ const loginControllers = async (req, res, next) => {
             });
         }
 
-        const user = await User.findOne({ email });
-
-        if (!user) {
+        const userDoc = await User.findOne({ email });
+        if (!userDoc) {
             return res.status(401).json({
                 success: false,
                 message: "User not found",
             });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-
+        const isMatch = await bcrypt.compare(password, userDoc.password);
         if (!isMatch) {
             return res.status(401).json({
                 success: false,
@@ -80,6 +74,7 @@ const loginControllers = async (req, res, next) => {
             });
         }
 
+        const user = userDoc.toObject();
         delete user.password;
 
         return res.status(200).json({
@@ -87,7 +82,6 @@ const loginControllers = async (req, res, next) => {
             message: `Welcome back, ${user.name}`,
             user,
         });
-
     }
     catch (err) {
         return res.status(500).json({
@@ -101,7 +95,6 @@ const setAvatarController = async (req, res, next) => {
     try {
 
         const userId = req.params.id;
-
         const imageData = req.body.image;
 
         const userData = await User.findByIdAndUpdate(userId, {
@@ -109,13 +102,10 @@ const setAvatarController = async (req, res, next) => {
             avatarImage: imageData,
         },
             { new: true });
-
         return res.status(200).json({
             isSet: userData.isAvatarImageSet,
             image: userData.avatarImage,
         });
-
-
     } catch (err) {
         next(err);
     }
@@ -129,7 +119,6 @@ const allUsers = async (req, res, next) => {
             "avatarImage",
             "_id",
         ]);
-
         return res.json(user);
     }
     catch (err) {
@@ -137,9 +126,26 @@ const allUsers = async (req, res, next) => {
     }
 }
 
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            success: false,
+            message: "Email is required"
+        });
+    }
+
+    return res.status(200).json({
+        success: true,
+        message: `Password reset link sent to ${email}`
+    });
+};
+
 export {
     registerControllers,
     loginControllers,
     setAvatarController,
-    allUsers
+    allUsers,
+    forgetPassword
 }
