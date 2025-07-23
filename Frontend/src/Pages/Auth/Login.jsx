@@ -62,7 +62,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4">
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-8">
       {/* Particles Background */}
       <Particles
         id="tsparticles"
@@ -88,19 +88,19 @@ const Login = () => {
       />
 
       {/* Login Form */}
-      <div className="max-w-md w-full bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-xl text-white z-10">
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg bg-gray-900 bg-opacity-90 p-6 sm:p-8 rounded-lg shadow-2xl text-white z-10">
         <div className="text-center mb-6">
           <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "white" }} />
-          <h2 className="text-2xl font-semibold mt-2">Login</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold mt-2">Login</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block mb-1 text-sm">Email address</label>
+            <label className="block mb-1 text-sm sm:text-base">Email address</label>
             <input
               type="email"
               name="email"
-              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm sm:text-base"
               placeholder="Enter your email"
               value={values.email}
               onChange={handleChange}
@@ -108,11 +108,11 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Password</label>
+            <label className="block mb-1 text-sm sm:text-base">Password</label>
             <input
               type="password"
               name="password"
-              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400 text-sm sm:text-base"
               placeholder="Enter your password"
               value={values.password}
               onChange={handleChange}
@@ -128,7 +128,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition disabled:opacity-60"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition disabled:opacity-60 text-sm sm:text-base"
           >
             {loading ? "Signing in…" : "Login"}
           </button>

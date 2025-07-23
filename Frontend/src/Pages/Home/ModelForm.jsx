@@ -30,10 +30,12 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
   if (!isShow) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-opacity-40 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-xl p-6">
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center px-4 overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-xl p-6 my-10 sm:my-16">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Update Transaction Details</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Update Transaction Details
+          </h2>
           <button
             className="text-gray-500 hover:text-gray-800 text-2xl"
             onClick={onClose}
@@ -44,7 +46,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
 
         <form className="space-y-4">
           <div>
-            <label className="block text-sm font-medium">Title</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Title
+            </label>
             <input
               name="title"
               type="text"
@@ -56,7 +60,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Amount</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Amount
+            </label>
             <input
               name="amount"
               type="number"
@@ -68,7 +74,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Category</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Category
+            </label>
             <select
               name="category"
               value={values.category}
@@ -90,7 +98,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Description</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
             <input
               name="description"
               type="text"
@@ -102,7 +112,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Transaction Type</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Transaction Type
+            </label>
             <select
               name="transactionType"
               value={values.transactionType}
@@ -116,7 +128,9 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium">Date</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Date
+            </label>
             <input
               type="date"
               name="date"
@@ -127,14 +141,14 @@ const ModelForm = ({ transaction, onClose, isShow }) => {
           </div>
         </form>
 
-        <div className="mt-6 flex justify-end gap-3">
+        <div className="mt-6 flex flex-col sm:flex-row sm:justify-end gap-3">
           <button
-            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+            className="w-full sm:w-auto px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
             onClick={onClose}
           >
             Close
           </button>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
             Submit
           </button>
         </div>

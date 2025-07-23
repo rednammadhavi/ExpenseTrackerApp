@@ -1,5 +1,4 @@
 import React from "react";
-import { Container, Row } from "react-bootstrap";
 import CircularProgressBar from "../../components/CircularProgressBar";
 import LineProgressBar from "../../components/LineProgressBar";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
@@ -32,61 +31,65 @@ const Analytics = ({ transactions }) => {
   };
 
   return (
-    <Container className="mt-6">
-      <Row className="flex flex-wrap gap-6 text-gray-200">
-        {/* Count Card */}
-        <div className="bg-gray-800 rounded-lg p-4 w-full sm:w-1/2 lg:w-1/4">
-          <h3 className="font-bold mb-2">Total Transactions</h3>
-          <p className="mb-1 text-green-400 flex items-center">
+    <div className="px-4 py-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-gray-200">
+        {/* Total Transactions */}
+        <div className="bg-gray-800 rounded-xl p-4 shadow-md">
+          <h3 className="font-bold text-lg mb-2">Total Transactions</h3>
+          <p className="text-green-400 flex items-center mb-1">
             <ArrowDropUpIcon /> Income: {incomeCount}
           </p>
-          <p className="mb-4 text-red-400 flex items-center">
+          <p className="text-red-400 flex items-center mb-4">
             <ArrowDropDownIcon /> Expense: {expenseCount}
           </p>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center gap-4">
             <CircularProgressBar percentage={incomePct} color="green" />
             <CircularProgressBar percentage={expensePct} color="red" />
           </div>
         </div>
 
-        {/* Turnover Card */}
-        <div className="bg-gray-800 rounded-lg p-4 w-full sm:w-1/2 lg:w-1/4">
-          <h3 className="font-bold mb-2">Total Turnover</h3>
-          <p className="mb-1 text-green-400 flex items-center">
-            <ArrowDropUpIcon /> {incomeAmount} <CurrencyRupeeIcon />
+        {/* Total Turnover */}
+        <div className="bg-gray-800 rounded-xl p-4 shadow-md">
+          <h3 className="font-bold text-lg mb-2">Total Turnover</h3>
+          <p className="text-green-400 flex items-center mb-1">
+            <ArrowDropUpIcon /> {incomeAmount} <CurrencyRupeeIcon className="ml-1" />
           </p>
-          <p className="mb-4 text-red-400 flex items-center">
-            <ArrowDropDownIcon /> {expenseAmount} <CurrencyRupeeIcon />
+          <p className="text-red-400 flex items-center mb-4">
+            <ArrowDropDownIcon /> {expenseAmount} <CurrencyRupeeIcon className="ml-1" />
           </p>
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center gap-4">
             <CircularProgressBar percentage={incomeAmountPct} color="green" />
             <CircularProgressBar percentage={expenseAmountPct} color="red" />
           </div>
         </div>
 
         {/* Category-wise Income */}
-        <div className="bg-gray-800 rounded-lg p-4 w-full lg:w-1/4">
-          <h3 className="font-bold mb-2">Category-wise Income</h3>
+        <div className="bg-gray-800 rounded-xl p-4 shadow-md overflow-y-auto max-h-[400px]">
+          <h3 className="font-bold text-lg mb-3">Category-wise Income</h3>
           {categories.map((cat) => {
             const sum = incomeTx.filter((i) => i.category === cat).reduce((a, i) => a + i.amount, 0);
             if (!sum) return null;
             const pct = ((sum / totalAmount) * 100).toFixed(0);
-            return <LineProgressBar key={cat} label={cat} percentage={pct} lineColor={colors[cat]} />;
+            return (
+              <LineProgressBar key={cat} label={cat} percentage={pct} lineColor={colors[cat]} />
+            );
           })}
         </div>
 
         {/* Category-wise Expense */}
-        <div className="bg-gray-800 rounded-lg p-4 w-full lg:w-1/4">
-          <h3 className="font-bold mb-2">Category-wise Expense</h3>
+        <div className="bg-gray-800 rounded-xl p-4 shadow-md overflow-y-auto max-h-[400px]">
+          <h3 className="font-bold text-lg mb-3">Category-wise Expense</h3>
           {categories.map((cat) => {
             const sum = expenseTx.filter((i) => i.category === cat).reduce((a, i) => a + i.amount, 0);
             if (!sum) return null;
             const pct = ((sum / totalAmount) * 100).toFixed(0);
-            return <LineProgressBar key={cat} label={cat} percentage={pct} lineColor={colors[cat]} />;
+            return (
+              <LineProgressBar key={cat} label={cat} percentage={pct} lineColor={colors[cat]} />
+            );
           })}
         </div>
-      </Row>
-    </Container>
+      </div>
+    </div>
   );
 };
 

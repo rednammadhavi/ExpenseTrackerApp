@@ -18,7 +18,7 @@ const CircularProgressBar = ({ percentage, color }) => {
   };
 
   return (
-    <div className="relative inline-block w-[100px] h-[100px]">
+    <div className="relative inline-block w-[25vw] max-w-[120px] min-w-[60px] aspect-square">
       <style>
         {`
           @keyframes progressAnimation {
@@ -55,11 +55,11 @@ const CircularProgressBar = ({ percentage, color }) => {
             ...circleVars,
             strokeDasharray: circumference,
             strokeDashoffset: progress,
-            animation: isAnimating ? 'progressAnimation 3s linear forwards' : 'none',
+            animation: isAnimating ? 'progressAnimation 2s ease-out forwards' : 'none',
           }}
         />
       </svg>
-      <div className="absolute inset-0 flex items-center justify-center text-lg font-semibold text-white">
+      <div className="absolute inset-0 flex items-center justify-center text-[1.2em] sm:text-[1.4em] font-semibold text-white">
         {percentage}%
       </div>
     </div>

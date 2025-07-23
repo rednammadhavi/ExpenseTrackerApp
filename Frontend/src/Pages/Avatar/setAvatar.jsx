@@ -48,7 +48,7 @@ export default function SetAvatar() {
 
     try {
       const { data } = await axios.post(`${setAvatarAPI}/${user._id}`, {
-        image: avatars[selectedAvatar], // Send direct URL
+        image: avatars[selectedAvatar],
       });
 
       if (data.isSet) {
@@ -67,24 +67,24 @@ export default function SetAvatar() {
   return (
     <>
       {isLoading ? (
-        <div className="h-screen flex justify-center items-center">
-          <img src={loader} alt="loader" className="w-24 h-24" />
+        <div className="min-h-screen flex justify-center items-center">
+          <img src={loader} alt="loader" className="w-20 h-20 sm:w-24 sm:h-24" />
         </div>
       ) : (
-        <div className="h-screen flex flex-col items-center justify-center gap-8 px-4 bg-gray-900 text-white">
-          <h1 className="text-2xl md:text-3xl font-semibold text-center">
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 px-4 py-6 text-white">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center max-w-md">
             Pick an Avatar as your profile picture
           </h1>
 
-          <div className="flex gap-6 flex-wrap justify-center">
+          <div className="flex flex-wrap gap-5 justify-center max-w-3xl">
             {avatars.map((avatar, index) => (
               <img
                 key={index}
                 src={avatar}
-                alt="avatar"
-                className={`w-24 h-24 rounded-full cursor-pointer transition duration-300 ${selectedAvatar === index
-                  ? "ring-4 ring-purple-600"
-                  : "hover:ring-4 hover:ring-purple-600"
+                alt={`avatar-${index}`}
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full cursor-pointer transition duration-300 border-4 ${selectedAvatar === index
+                  ? "border-purple-600"
+                  : "border-transparent hover:border-purple-600"
                   }`}
                 onClick={() => setSelectedAvatar(index)}
               />
@@ -93,7 +93,7 @@ export default function SetAvatar() {
 
           <button
             onClick={setProfilePicture}
-            className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition duration-300"
+            className="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm sm:text-base font-medium transition duration-300"
           >
             Set as Profile Picture
           </button>

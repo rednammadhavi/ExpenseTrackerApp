@@ -9,12 +9,7 @@ import { deleteTransactions, editTransactions } from "../../utils/ApiRequest";
 const TableData = ({ data, user, onRefresh }) => {
   const [showModal, setShowModal] = useState(false);
   const [values, setValues] = useState({
-    title: "",
-    amount: "",
-    description: "",
-    category: "",
-    date: "",
-    transactionType: "",
+    title: "", amount: "", description: "", category: "", date: "", transactionType: ""
   });
   const [currId, setCurrId] = useState(null);
   const [editLoading, setEditLoading] = useState(false);
@@ -78,56 +73,53 @@ const TableData = ({ data, user, onRefresh }) => {
   };
 
   return (
-    <div className="overflow-x-auto p-4">
+    <div className="px-4 py-6">
       <ToastContainer position="bottom-right" autoClose={2000} />
-      <table className="min-w-full divide-y divide-gray-200 shadow-lg rounded-lg overflow-hidden bg-white">
-        <thead className="bg-gray-100">
-          <tr className="text-left text-sm text-gray-600 uppercase">
-            <th className="px-4 py-3">Title</th>
-            <th className="px-4 py-3">Amount</th>
-            <th className="px-4 py-3">Category</th>
-            <th className="px-4 py-3">Type</th>
-            <th className="px-4 py-3">Date</th>
-            <th className="px-4 py-3">Actions</th>
-          </tr>
-        </thead>
-        <tbody className="text-sm text-gray-700">
-          {data.map((item, idx) => (
-            <tr key={idx} className="hover:bg-gray-50">
-              <td className="px-4 py-2">{item.title}</td>
-              <td className="px-4 py-2">₹{item.amount}</td>
-              <td className="px-4 py-2">{item.category}</td>
-              <td className="px-4 py-2">
-                <span className={`px-2 py-1 rounded text-white text-xs font-semibold 
-                  ${item.transactionType === "income" ? "bg-green-500" : "bg-red-500"}`}>
-                  {item.transactionType}
-                </span>
-              </td>
-              <td className="px-4 py-2">{moment(item.date).format("DD-MM-YYYY")}</td>
-              <td className="px-4 py-2 flex gap-3">
-                <button
-                  className="text-blue-600 hover:text-blue-800"
-                  onClick={() => handleEdit(item)}
-                >
-                  <AiFillEdit size={20} />
-                </button>
-                <button
-                  className="text-red-600 hover:text-red-800"
-                  onClick={() => handleDelete(item._id)}
-                >
-                  <AiFillDelete size={20} />
-                </button>
-              </td>
+
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-gray-700 bg-white shadow-md rounded-lg">
+          <thead className="bg-gray-100 text-xs text-gray-600 uppercase">
+            <tr>
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Amount</th>
+              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3">Type</th>
+              <th className="px-4 py-3">Date</th>
+              <th className="px-4 py-3 text-center">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item, idx) => (
+              <tr key={idx} className="border-t hover:bg-gray-50">
+                <td className="px-4 py-2">{item.title}</td>
+                <td className="px-4 py-2">₹{item.amount}</td>
+                <td className="px-4 py-2">{item.category}</td>
+                <td className="px-4 py-2">
+                  <span className={`px-2 py-1 rounded text-white text-xs font-semibold 
+                    ${item.transactionType === "income" ? "bg-green-500" : "bg-red-500"}`}>
+                    {item.transactionType}
+                  </span>
+                </td>
+                <td className="px-4 py-2">{moment(item.date).format("DD-MM-YYYY")}</td>
+                <td className="px-4 py-2 flex justify-center gap-3 text-lg">
+                  <button onClick={() => handleEdit(item)} className="text-blue-600 hover:text-blue-800">
+                    <AiFillEdit />
+                  </button>
+                  <button onClick={() => handleDelete(item._id)} className="text-red-600 hover:text-red-800">
+                    <AiFillDelete />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-            <h2 className="text-lg font-bold mb-4">Edit Transaction</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-50 flex items-center justify-center p-4">
+          <div className="bg-white text-gray-900 w-full max-w-lg rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-4">Edit Transaction</h2>
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <input
                 type="text"
@@ -135,7 +127,7 @@ const TableData = ({ data, user, onRefresh }) => {
                 placeholder="Title"
                 value={values.title}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border border-gray-300 text-gray-900  px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="number"
@@ -143,7 +135,7 @@ const TableData = ({ data, user, onRefresh }) => {
                 placeholder="Amount"
                 value={values.amount}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border border-gray-300 text-gray-900  px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="text"
@@ -151,20 +143,20 @@ const TableData = ({ data, user, onRefresh }) => {
                 placeholder="Category"
                 value={values.category}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border border-gray-300 text-gray-900  px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <input
                 type="date"
                 name="date"
                 value={values.date}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border border-gray-300 text-gray-900  px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <select
                 name="transactionType"
                 value={values.transactionType}
                 onChange={handleChange}
-                className="w-full border px-3 py-2 rounded"
+                className="w-full border border-gray-300 text-gray-900  px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Select Type</option>
                 <option value="income">Income</option>
@@ -175,7 +167,7 @@ const TableData = ({ data, user, onRefresh }) => {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 text-gray-900 rounded hover:bg-gray-300"
                 >
                   Cancel
                 </button>

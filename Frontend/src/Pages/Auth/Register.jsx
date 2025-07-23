@@ -59,7 +59,7 @@ const Register = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4">
+    <div className="relative min-h-screen overflow-hidden flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-black">
       {/* Background particles */}
       <Particles
         id="tsparticles"
@@ -85,53 +85,53 @@ const Register = () => {
       />
 
       {/* Registration Form */}
-      <div className="max-w-md w-full bg-gray-900 bg-opacity-80 p-8 rounded-lg shadow-xl text-white z-10">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-gray-900 bg-opacity-90 p-6 sm:p-8 rounded-xl shadow-2xl text-white z-10">
         <div className="text-center mb-6">
           <AccountBalanceWalletIcon sx={{ fontSize: 40, color: "white" }} />
-          <h2 className="text-2xl font-semibold mt-2">Register</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mt-2">Create an Account</h2>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="name" className="block mb-1 text-sm">Full Name</label>
+            <label htmlFor="name" className="block mb-1 text-sm sm:text-base">Full Name</label>
             <input
               id="name"
               name="name"
               type="text"
               autoComplete="name"
               required
-              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter your name"
+              className="w-full px-4 py-2 text-sm sm:text-base bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              placeholder="Your full name"
               value={values.name}
               onChange={handleChange}
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="block mb-1 text-sm">Email Address</label>
+            <label htmlFor="email" className="block mb-1 text-sm sm:text-base">Email Address</label>
             <input
               id="email"
               name="email"
               type="email"
               autoComplete="email"
               required
-              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter your email"
+              className="w-full px-4 py-2 text-sm sm:text-base bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              placeholder="example@domain.com"
               value={values.email}
               onChange={handleChange}
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-1 text-sm">Password</label>
+            <label htmlFor="password" className="block mb-1 text-sm sm:text-base">Password</label>
             <input
               id="password"
               name="password"
               type="password"
               autoComplete="new-password"
               required
-              className="w-full px-4 py-2 bg-gray-800 rounded focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter your password"
+              className="w-full px-4 py-2 text-sm sm:text-base bg-gray-800 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400"
+              placeholder="Enter a strong password"
               value={values.password}
               onChange={handleChange}
             />
@@ -146,7 +146,7 @@ const Register = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded transition disabled:opacity-60"
+            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold py-2 px-4 rounded-md transition disabled:opacity-50"
           >
             {loading ? "Registering..." : "Sign Up"}
           </button>
